@@ -1,4 +1,4 @@
-import { startOfHour, isBefore, getHours, format } from 'date-fns';
+import { startOfHour, isBefore, getHours, format, isWeekend } from 'date-fns';
 import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
@@ -46,6 +46,10 @@ class CreateAppointmentService {
       throw new AppError(
         'You can only create appointments between 8am and 5pm',
       );
+    }
+
+    if (isWeekend(appointmentDate)) {
+      throw new AppError('You can only create appointments during the week');
     }
 
     const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
